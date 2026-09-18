@@ -1,0 +1,24 @@
+<%- include('partials/head', { title: 'Daftar Peserta' }) %>
+<main class="auth-page">
+  <div class="auth-scrim"></div>
+  <section class="auth-card bracket-card" aria-labelledby="register-title">
+    <div class="brand-logo-frame"><img class="brand-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></div>
+    <p class="eyebrow">Sistem Presensi</p>
+    <h1 id="register-title">Daftar Peserta</h1>
+    <p class="form-note">Gunakan NPM yang terdaftar pada data peserta PKKMB.</p>
+    <% if (error) { %>
+      <p class="alert" role="alert"><%= error %></p>
+    <% } %>
+    <form method="post" action="/mahasiswa/daftar">
+      <label for="npm">NPM</label>
+      <input id="npm" name="npm" inputmode="numeric" autocomplete="username" pattern="[0-9]{10}" maxlength="10" required value="<%= npm %>">
+      <label for="password">Sandi <span>(minimal 8 karakter)</span></label>
+      <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+      <label for="konfirmasi_sandi">Konfirmasi sandi</label>
+      <input id="konfirmasi_sandi" name="konfirmasi_sandi" type="password" autocomplete="new-password" minlength="8" required>
+      <button type="submit">Daftar</button>
+    </form>
+    <p class="auth-switch">Sudah punya akun? <a href="/mahasiswa/login">Masuk peserta</a></p>
+  </section>
+</main>
+<%- include('partials/foot') %>

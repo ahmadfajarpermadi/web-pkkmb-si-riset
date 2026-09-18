@@ -1,0 +1,24 @@
+<%- include('partials/head', { title: 'Masuk Peserta' }) %>
+<main class="auth-page">
+  <div class="auth-scrim"></div>
+  <section class="auth-card bracket-card" aria-labelledby="login-title">
+    <div class="brand-logo-frame"><img class="brand-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></div>
+    <p class="eyebrow">Sistem Presensi</p>
+    <h1 id="login-title">Masuk Peserta</h1>
+    <% if (registered) { %>
+      <p class="alert alert-success" role="status">Pendaftaran berhasil. Silakan masuk dengan NPM dan sandi Anda.</p>
+    <% } %>
+    <% if (error) { %>
+      <p class="alert" role="alert"><%= error %></p>
+    <% } %>
+    <form method="post" action="/mahasiswa/login">
+      <label for="npm">NPM</label>
+      <input id="npm" name="npm" inputmode="numeric" autocomplete="username" pattern="[0-9]{10}" maxlength="10" required value="<%= npm %>">
+      <label for="password">Sandi</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button type="submit">Masuk</button>
+    </form>
+    <p class="auth-switch">Belum punya akun? <a href="/mahasiswa/daftar">Daftar peserta</a></p>
+  </section>
+</main>
+<%- include('partials/foot') %>

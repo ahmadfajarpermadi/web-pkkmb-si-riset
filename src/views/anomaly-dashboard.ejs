@@ -1,0 +1,24 @@
+<%- include('partials/head', { title: 'Anomali Presensi' }) %>
+<main class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="dashboard-logo-frame"><img class="dashboard-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></div>
+    <a class="dashboard-action" href="/panitia/dashboard">Dashboard</a>
+  </header>
+  <section class="dashboard-card bracket-card">
+    <p class="eyebrow">Review Manual · 5 Menit Terakhir</p>
+    <h1>Anomali Presensi</h1>
+    <p class="form-note">IP ditandai jika mencoba lebih dari 3 NPM berbeda dalam 5 menit. Tidak ada pemblokiran otomatis.</p>
+    <% if (anomalies.length === 0) { %>
+      <p class="empty-state">Belum ada IP yang perlu ditinjau.</p>
+    <% } else { %>
+      <div class="table-wrap"><table>
+        <thead><tr><th>IP</th><th>NPM</th><th>Hasil</th><th>Waktu</th><th>Ringkasan</th></tr></thead>
+        <tbody><% anomalies.forEach((anomaly) => { %><tr>
+          <td><code><%= anomaly.ip_address %></code></td><td><%= anomaly.npm %></td><td><%= anomaly.hasil %></td><td><%= anomaly.waktu %></td>
+          <td><strong><%= anomaly.jumlah_npm %> NPM</strong><br><span class="form-note"><%= anomaly.jumlah_percobaan %> percobaan</span></td>
+        </tr><% }) %></tbody>
+      </table></div>
+    <% } %>
+  </section>
+</main>
+<%- include('partials/foot') %>

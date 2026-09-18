@@ -1,0 +1,49 @@
+<%- include('partials/head', { title: 'Rekap Presensi' }) %>
+<main class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="dashboard-logo-frame"><img class="dashboard-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></div>
+    <a class="dashboard-action" href="/panitia/dashboard">Dashboard</a>
+  </header>
+  <section class="dashboard-card bracket-card">
+    <p class="eyebrow">Rekap Kehadiran</p>
+    <h1>Rekap Presensi</h1>
+    <p class="form-note">Total presensi berhasil: <strong><%= totalHadirKeseluruhan %></strong> presensi dari <strong><%= events.length %></strong> event.</p>
+  </section>
+
+  <% if (events.length === 0) { %>
+    <section class="dashboard-card bracket-card"><p class="empty-state">Belum ada event.</p></section>
+  <% } %>
+
+  <% events.forEach((event) => { %>
+    <section class="dashboard-card bracket-card">
+      <p class="eyebrow"><%= event.status_aktif ? 'Event Aktif' : 'Event' %> · <%= event.waktu_mulai %> s.d. <%= event.waktu_selesai %></p>
+      <h2><%= event.nama_event %></h2>
+      <p class="form-note">Hadir <strong><%= event.total_hadir %></strong> dari <strong><%= event.total_peserta %></strong> peserta terverifikasi · Belum hadir <strong><%= event.belumHadir.length %></strong>.</p>
+
+      <h2>Sudah Presensi</h2>
+      <% if (event.presensi.length === 0) { %>
+        <p class="empty-state">Belum ada peserta yang presensi.</p>
+      <% } else { %>
+        <div class="table-wrap"><table>
+          <thead><tr><th>NPM</th><th>Nama</th><th>Waktu Scan (WIB)</th></tr></thead>
+          <tbody><% event.presensi.forEach((row) => { %><tr>
+            <td><code><%= row.npm %></code></td><td><%= row.nama %></td><td><%= row.waktu_scan %></td>
+          </tr><% }) %></tbody>
+        </table></div>
+      <% } %>
+
+      <h2>Belum Presensi</h2>
+      <% if (event.belumHadir.length === 0) { %>
+        <p class="empty-state">Semua peserta terverifikasi sudah presensi.</p>
+      <% } else { %>
+        <div class="table-wrap"><table>
+          <thead><tr><th>NPM</th><th>Nama</th></tr></thead>
+          <tbody><% event.belumHadir.forEach((row) => { %><tr>
+            <td><code><%= row.npm %></code></td><td><%= row.nama %></td>
+          </tr><% }) %></tbody>
+        </table></div>
+      <% } %>
+    </section>
+  <% }) %>
+</main>
+<%- include('partials/foot') %>

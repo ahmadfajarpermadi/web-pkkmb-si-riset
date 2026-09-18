@@ -1,0 +1,39 @@
+<%- include('partials/head', { title: 'Dashboard Peserta' }) %>
+<main class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="dashboard-logo-frame"><img class="dashboard-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></div>
+    <form method="post" action="/mahasiswa/logout"><button class="button-secondary" type="submit">Keluar</button></form>
+  </header>
+  <section class="dashboard-card bracket-card template-card">
+    <p class="eyebrow">Persiapan Peserta</p>
+    <h2>Template Twibbon</h2>
+    <% if (typeof twibbonTemplateUrl !== 'undefined' && twibbonTemplateUrl) { %>
+      <p class="form-note">Unduh template dan salin contoh caption wajib sebelum membuat postingan Instagram.</p>
+      <a class="dashboard-action" href="<%= twibbonTemplateUrl %>" target="_blank" rel="noopener noreferrer">Buka Google Drive</a>
+    <% } else { %>
+      <p class="form-note">Link template twibbon belum dikonfigurasi oleh panitia.</p>
+    <% } %>
+  </section>
+  <section class="dashboard-card bracket-card">
+    <p class="eyebrow">Peserta PKKMB</p>
+    <h1>Selamat datang, <%= mahasiswa.nama %></h1>
+    <p>NPM <strong><%= mahasiswa.npm %></strong></p>
+    <h2>Status Twibbon</h2>
+    <% const labels = { belum_submit: 'Belum dikirim', pending: 'Menunggu verifikasi', verified: 'Terverifikasi', rejected: 'Ditolak' }; %>
+    <p class="status status-<%= mahasiswa.status_verifikasi %>"><strong><%= labels[mahasiswa.status_verifikasi] %></strong></p>
+    <% if (typeof twibbonSuccess !== 'undefined' && twibbonSuccess) { %><p class="alert alert-success" role="status"><%= twibbonSuccess %></p><% } %>
+    <% if (typeof twibbonError !== 'undefined' && twibbonError) { %><p class="alert" role="alert"><%= twibbonError %></p><% } %>
+    <% if (mahasiswa.status_verifikasi === 'belum_submit' || mahasiswa.status_verifikasi === 'rejected') { %>
+      <p class="form-note"><%= mahasiswa.status_verifikasi === 'rejected' ? 'Link sebelumnya ditolak. Periksa postingan lalu kirim ulang.' : 'Kirim link postingan twibbon Instagram Anda untuk diverifikasi panitia.' %></p>
+      <form method="post" action="/mahasiswa/twibbon/submit">
+        <label for="link_twibbon">Link postingan Instagram</label>
+        <input id="link_twibbon" name="link_twibbon" type="url" inputmode="url" placeholder="https://www.instagram.com/p/..." required>
+        <button type="submit">Kirim link twibbon</button>
+      </form>
+    <% } else { %>
+      <p class="form-note">Link: <a href="<%= mahasiswa.link_twibbon %>" target="_blank" rel="noopener noreferrer">Buka postingan Instagram</a></p>
+      <% if (mahasiswa.status_verifikasi === 'verified') { %><a class="dashboard-action" href="/mahasiswa/presensi">Scan QR Presensi</a><% } %>
+    <% } %>
+  </section>
+</main>
+<%- include('partials/foot') %>

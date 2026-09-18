@@ -1,0 +1,32 @@
+{
+  "name": "web_pkkmbsi",
+  "version": "1.0.0",
+  "description": "Sistem Presensi PKKMB HIROSI 2026",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "init-db": "node src/db/initialize.js",
+    "create-panitia": "node src/scripts/create-panitia.js",
+    "create-mahasiswa": "node src/scripts/create-mahasiswa.js",
+    "create-event": "node src/scripts/create-event.js",
+    "load-test": "node src/scripts/load-test.js",
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^13.0.3",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "html5-qrcode": "^2.3.8",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "autocannon": "^8.0.0"
+  }
+}

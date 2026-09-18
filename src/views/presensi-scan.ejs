@@ -1,0 +1,60 @@
+<%- include('partials/head', { title: 'Scan QR Presensi' }) %>
+<main class="dashboard-page">
+  <header class="dashboard-header"><a class="dashboard-action" href="/mahasiswa/dashboard">Kembali</a><img class="dashboard-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></header>
+  <section class="dashboard-card bracket-card scan-card">
+    <p class="eyebrow">Presensi PKKMB</p><h1>Scan QR Venue</h1>
+    <p class="form-note">Izinkan kamera dan lokasi presisi. Presensi hanya berhasil saat Anda berada di radius venue.</p>
+    <div id="qr-reader" aria-label="Pemindai QR"></div>
+    <p id="scan-status" class="qr-status" role="status">Menyiapkan kamera…</p>
+  </section>
+</main>
+<script src="/vendor/html5-qrcode/html5-qrcode.min.js"></script>
+<script>
+  const statusElement = document.querySelector('#scan-status');
+  let scanner; let submitting = false;
+  function showStatus(message) { statusElement.textContent = message; }
+  function position() {
+    return new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: true, timeout: 15000, maximumAge: 0,
+    }));
+  }
+  async function onScanSuccess(token) {
+    if (submitting) return;
+    submitting = true;
+    await scanner.pause(true);
+    showStatus('Mengambil lokasi akurat…');
+    try {
+      const current = await position();
+      showStatus('Memvalidasi presensi…');
+      const response = await fetch('/mahasiswa/presensi/submit', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ token, latitude: current.coords.latitude, longitude: current.coords.longitude, accuracy: current.coords.accuracy }),
+      });
+      const data = await response.json();
+      showStatus(data.message || 'Presensi tidak dapat diproses.');
+      if (!response.ok) { submitting = false; await scanner.resume(); }
+    } catch (error) {
+      showStatus(error.code === 1 ? 'Izin lokasi ditolak. Presensi tidak dapat dilanjutkan.' : 'Lokasi tidak dapat diperoleh. Coba lagi di area dengan sinyal GPS lebih baik.');
+      submitting = false;
+      await scanner.resume();
+    }
+  }
+  async function startScanner() {
+    try {
+      scanner = new Html5Qrcode('qr-reader');
+      const config = { fps: 10, qrbox: { width: 240, height: 240 } };
+      let cameraId = { facingMode: 'environment' };
+      try {
+        const cameras = await Html5Qrcode.getCameras();
+        const backCamera = cameras.find((c) => /back|rear|environment/i.test(c.label));
+        if (cameras.length > 0) cameraId = (backCamera || cameras[0]).id;
+      } catch { /* daftar kamera belum bisa dibaca — biarkan facingMode environment menangani */ }
+      await scanner.start(cameraId, config, onScanSuccess, () => {});
+      showStatus('Arahkan kamera ke QR yang tampil di venue.');
+    } catch (error) {
+      showStatus('Kamera tidak dapat dibuka: ' + (error && error.message ? error.message : error));
+    }
+  }
+  startScanner();
+</script>
+<%- include('partials/foot') %>

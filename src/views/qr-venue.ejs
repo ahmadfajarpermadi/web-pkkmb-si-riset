@@ -1,0 +1,32 @@
+<%- include('partials/head', { title: 'QR Venue' }) %>
+<main class="qr-page">
+  <header class="qr-header"><a href="/panitia/dashboard">← Dashboard Panitia</a><img src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></header>
+  <% if (!event) { %>
+    <section class="qr-card bracket-card"><h1>Event belum diatur</h1><p>Belum ada event aktif. Buat event aktif terlebih dahulu melalui perintah <code>npm run create-event</code>.</p></section>
+  <% } else { %>
+    <section class="qr-card bracket-card" data-rotation-interval="<%= rotationInterval %>">
+      <p class="eyebrow">Presensi Venue</p><h1 id="event-name"><%= event.nama_event %></h1>
+      <img id="qr-image" class="qr-image" alt="QR presensi sedang dimuat">
+      <p id="qr-status" class="qr-status" role="status">Menyiapkan QR dinamis…</p>
+      <p class="form-note">QR diperbarui otomatis setiap <%= rotationInterval %> detik. Mahasiswa harus memindai QR yang sedang tampil.</p>
+    </section>
+    <script>
+      const card = document.querySelector('.qr-card');
+      const image = document.querySelector('#qr-image');
+      const status = document.querySelector('#qr-status');
+      const interval = Number(card.dataset.rotationInterval) * 1000;
+      async function refreshQr() {
+        try {
+          const result = await fetch('/panitia/qr/token', { cache: 'no-store' });
+          const data = await result.json();
+          if (!result.ok) throw new Error(data.message || 'QR tidak dapat dibuat.');
+          image.src = data.qrDataUrl;
+          status.textContent = `QR aktif — diperbarui pada ${new Date(data.generatedAt * 1000).toLocaleTimeString('id-ID')}.`;
+        } catch (error) { status.textContent = error.message; }
+      }
+      refreshQr();
+      window.setInterval(refreshQr, interval);
+    </script>
+  <% } %>
+</main>
+<%- include('partials/foot') %>

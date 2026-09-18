@@ -1,0 +1,48 @@
+<%- include('partials/head', { title: 'Antrean Twibbon' }) %>
+<main class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="dashboard-logo-frame"><img class="dashboard-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></div>
+    <a class="dashboard-action" href="/panitia/dashboard">Dashboard</a>
+  </header>
+  <section class="dashboard-card bracket-card">
+    <p class="eyebrow">Verifikasi Manual</p>
+    <h1>Antrean Twibbon</h1>
+    <nav class="tab-list">
+      <a class="tab<%= status === 'pending' ? ' tab-active' : '' %>" href="/panitia/twibbon/antrian?status=pending">Menunggu (<%= counts.pending || 0 %>)</a>
+      <a class="tab<%= status === 'verified' ? ' tab-active' : '' %>" href="/panitia/twibbon/antrian?status=verified">Terverifikasi (<%= counts.verified || 0 %>)</a>
+      <a class="tab<%= status === 'rejected' ? ' tab-active' : '' %>" href="/panitia/twibbon/antrian?status=rejected">Ditolak (<%= counts.rejected || 0 %>)</a>
+      <a class="tab<%= status === 'all' ? ' tab-active' : '' %>" href="/panitia/twibbon/antrian?status=all">Semua</a>
+    </nav>
+    <% if (submissions.length === 0) { %>
+      <p><%= { pending: 'Tidak ada submission yang menunggu verifikasi.', verified: 'Belum ada submission terverifikasi.', rejected: 'Belum ada submission ditolak.', all: 'Belum ada submission.' }[status] %></p>
+    <% } else { %>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>NPM</th><th>Nama</th><th>Postingan</th>
+          <% if (status !== 'pending') { %><th>Status</th><th>Diverifikasi Oleh</th><th>Waktu</th><% } %>
+          <% if (status === 'pending') { %><th>Aksi</th><% } %>
+        </tr></thead>
+        <tbody>
+          <% submissions.forEach((submission) => { %>
+            <tr>
+              <td><%= submission.npm %></td><td><%= submission.nama %></td>
+              <td><a href="<%= submission.link_twibbon %>" target="_blank" rel="noopener noreferrer">Buka Instagram</a></td>
+              <% if (status !== 'pending') { %>
+                <td><span class="status status-<%= submission.status_verifikasi %>"><%= { verified: 'Terverifikasi', rejected: 'Ditolak', pending: 'Menunggu' }[submission.status_verifikasi] %></span></td>
+                <td><%= submission.diverifikasi_oleh || '—' %></td>
+                <td><%= submission.diverifikasi_pada || '—' %></td>
+              <% } %>
+              <% if (status === 'pending') { %>
+                <td><div class="verification-actions">
+                  <form method="post" action="/panitia/twibbon/<%= submission.npm %>/status"><input type="hidden" name="status" value="verified"><button class="verify-button" type="submit">✓ Verifikasi</button></form>
+                  <form method="post" action="/panitia/twibbon/<%= submission.npm %>/status"><input type="hidden" name="status" value="rejected"><button class="reject-button" type="submit">× Tolak</button></form>
+                </div></td>
+              <% } %>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </section>
+</main>
+<%- include('partials/foot') %>

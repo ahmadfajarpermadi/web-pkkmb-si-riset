@@ -1,0 +1,19 @@
+<%- include('partials/head', { title: 'Masuk Panitia' }) %>
+<main class="auth-page">
+  <div class="auth-scrim"></div>
+  <section class="auth-card bracket-card" aria-labelledby="login-title">
+    <div class="brand-logo-frame"><img class="brand-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></div>
+    <p class="eyebrow">Area Terbatas</p>
+    <h1 id="login-title">Masuk Panitia</h1>
+    <% if (error) { %><p class="alert" role="alert"><%= error %></p><% } %>
+    <form method="post" action="/panitia/login">
+      <label for="username">Username</label>
+      <input id="username" name="username" autocomplete="username" maxlength="40" required value="<%= username %>">
+      <label for="password">Sandi</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button type="submit">Masuk sebagai panitia</button>
+    </form>
+    <p class="auth-switch"><a href="/mahasiswa/login">Kembali ke masuk peserta</a></p>
+  </section>
+</main>
+<%- include('partials/foot') %>

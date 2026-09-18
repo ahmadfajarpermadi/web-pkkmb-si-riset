@@ -1,0 +1,18 @@
+<%- include('partials/head', { title: 'Dashboard Panitia' }) %>
+<main class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="dashboard-logo-frame"><img class="dashboard-logo" src="/assets/logo-pkkmb-hirosi-2026.png" alt="Logo PKKMB HIROSI 2026"></div>
+    <form method="post" action="/panitia/logout"><button class="button-secondary" type="submit">Keluar</button></form>
+  </header>
+  <section class="dashboard-card bracket-card">
+    <p class="eyebrow">Dashboard Panitia</p>
+    <h1>Halo, <%= panitia.nama %></h1>
+    <p>Username <strong><%= panitia.username %></strong> · <strong><%= panitia.role %></strong></p>
+    <p class="form-note">Ada <strong><%= totalPending %></strong> submission twibbon yang menunggu verifikasi.</p>
+    <a class="dashboard-action" href="/panitia/twibbon/antrian">Buka antrean verifikasi</a>
+    <a class="dashboard-action" href="/panitia/qr">Tampilkan QR venue</a>
+    <a class="dashboard-action" href="/panitia/rekap">Rekap presensi</a>
+    <a class="dashboard-action" href="/panitia/anomali">Review anomali presensi</a>
+  </section>
+</main>
+<%- include('partials/foot') %>
